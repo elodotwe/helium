@@ -6,14 +6,8 @@ import android.widget.TextView;
 
 import com.jacobarau.helium.data.JDataListener;
 
-public class SubscriptionListActivity extends Activity {
+public class SubscriptionListActivity extends Activity implements JDataListener<String> {
     TextView textView;
-    JDataListener<String> listener = new JDataListener<String>() {
-        @Override
-        public void onDataUpdated(String value) {
-            textView.setText(value);
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +20,17 @@ public class SubscriptionListActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        HeliumApplication.data.subscribe(listener);
+        HeliumApplication.data.subscribe(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        HeliumApplication.data.unsubscribe(listener);
+        HeliumApplication.data.unsubscribe(this);
+    }
+
+    @Override
+    public void onDataUpdated(String value) {
+        textView.setText(value);
     }
 }
