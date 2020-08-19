@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true">
+
+        <shape>
+            <!-- TODO: Hax. By default it seems we have no highlight beyond a foreground text
+             color change when the user has selected an item in Holo theme. I don't know how
+             the period-correct apps handled this. For now we'll just copy-pasta a closeish color
+             and move on. -->
+            <solid android:color="#34b5e4" />
+        </shape>
+    </item>
+</selector>

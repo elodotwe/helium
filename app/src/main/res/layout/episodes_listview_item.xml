@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/episode_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/episode_play_button"
+        android:text="Episode title"
+        android:textAppearance="@android:style/TextAppearance.Holo.Large"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/episode_play_button"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/episode_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/episode_title"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/episode_play_button"
+        android:text="Episode date, length"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/episode_play_button"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/episode_play_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@android:drawable/ic_media_play"
+        android:focusable="false" />
+</RelativeLayout>

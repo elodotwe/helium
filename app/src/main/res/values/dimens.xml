@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="BaseActivity" parent="android:Theme.Holo" />
+    <dimen name="podcast_list_vertical_padding">4dp</dimen>
 </resources>
