@@ -190,19 +190,21 @@ public class PodcastDatabase {
         return items;
     }
 
-    public void save(final Item item) {
+    public void save(final List<Item> items) {
         databaseExecutor.submit(new Runnable() {
             @Override
             public void run() {
-                if (item.id != null) {
-                    int affected = database.update(PodcastDatabaseContract.Items.TABLE_NAME,
-                            itemToValues(item),
-                            PodcastDatabaseContract.Items._ID + " = ?", new String[]{String.valueOf(item.id)});
-                    if (affected != 1) {
-                        throw new RuntimeException("Updating Item didn't affect 1 row as expected; item: " + item);
+                for (Item item: items) {
+                    if (item.id != null) {
+                        int affected = database.update(PodcastDatabaseContract.Items.TABLE_NAME,
+                                itemToValues(item),
+                                PodcastDatabaseContract.Items._ID + " = ?", new String[]{String.valueOf(item.id)});
+                        if (affected != 1) {
+                            throw new RuntimeException("Updating Item didn't affect 1 row as expected; item: " + item);
+                        }
+                    } else {
+                        item.id = database.insertOrThrow(PodcastDatabaseContract.Items.TABLE_NAME, null, itemToValues(item));
                     }
-                } else {
-                    item.id = database.insertOrThrow(PodcastDatabaseContract.Items.TABLE_NAME, null, itemToValues(item));
                 }
                 refreshItems();
             }

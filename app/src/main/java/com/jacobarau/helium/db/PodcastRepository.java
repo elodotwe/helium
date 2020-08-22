@@ -34,4 +34,8 @@ public class PodcastRepository {
     public void unsubscribeFrom(Subscription subscription) {
         podcastDatabase.delete(subscription);
     }
+
+    public void save(List<Item> items) {
+        podcastDatabase.save(items);
+    }
 }

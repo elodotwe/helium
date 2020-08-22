@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.jacobarau.helium.HeliumApplication;
+import com.jacobarau.helium.model.Item;
 import com.jacobarau.helium.model.Subscription;
 import com.jacobarau.helium.ui.Notifications;
 import com.jacobarau.helium.update.rss.ParseException;
@@ -24,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -74,7 +76,17 @@ public class UpdateService extends Service {
                     }
 
                     subscription.title = result.subscription.title;
+                    subscription.link = result.subscription.link;
+                    subscription.imageUrl = result.subscription.imageUrl;
+                    subscription.description = result.subscription.description;
+                    subscription.lastUpdated = new Date();
+
                     HeliumApplication.wiring.podcastRepository.save(subscription);
+
+                    for (Item item: result.items) {
+                        item.subscriptionId = subscription.id;
+                    }
+                    HeliumApplication.wiring.podcastRepository.save(result.items);
                 }
             });
         }
