@@ -62,16 +62,24 @@ public class PodcastDatabase {
         });
     }
 
-    public void deleteSubscription(final Subscription subscription) {
+    public void delete(final List<Subscription> subscriptions) {
         databaseExecutor.submit(new Runnable() {
             @Override
             public void run() {
-                database.delete(Subscriptions.TABLE_NAME, Subscriptions._ID + " = ?", new String[]{String.valueOf(subscription.id)});
+                for (Subscription subscription: subscriptions) {
+                    database.delete(Subscriptions.TABLE_NAME, Subscriptions._ID + " = ?", new String[]{String.valueOf(subscription.id)});
+                }
                 refreshSubscriptions();
                 // TODO validate that when you delete a subscription, its child items go away too
                 refreshItems();
             }
         });
+    }
+
+    public void delete(final Subscription subscription) {
+        List<Subscription> subscriptions = new ArrayList<>();
+        subscriptions.add(subscription);
+        delete(subscriptions);
     }
 
     private Date getDate(Cursor cursor, int columnIndex) {

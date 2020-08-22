@@ -49,11 +49,11 @@ public class SubscriptionListViewModel {
     }
 
     public void unsubscribeFrom(Subscription subscription) {
-
+        podcastRepository.unsubscribeFrom(subscription);
     }
 
     public void unsubscribeFrom(List<Subscription> subscriptions) {
-
+        podcastRepository.unsubscribeFrom(subscriptions);
     }
 
     public void updatePodcasts() {

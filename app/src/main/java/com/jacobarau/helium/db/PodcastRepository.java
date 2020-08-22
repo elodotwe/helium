@@ -4,6 +4,8 @@ import com.jacobarau.helium.jdata.JDataList;
 import com.jacobarau.helium.model.Item;
 import com.jacobarau.helium.model.Subscription;
 
+import java.util.List;
+
 public class PodcastRepository {
     public final JDataList<Subscription> subscriptions;
     public final JDataList<Item> items;
@@ -23,5 +25,13 @@ public class PodcastRepository {
 
     public void save(Subscription subscription) {
         podcastDatabase.save(subscription);
+    }
+
+    public void unsubscribeFrom(List<Subscription> subscriptions) {
+        podcastDatabase.delete(subscriptions);
+    }
+
+    public void unsubscribeFrom(Subscription subscription) {
+        podcastDatabase.delete(subscription);
     }
 }
