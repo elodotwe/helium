@@ -2,13 +2,15 @@ package com.jacobarau.helium.model;
 
 import android.annotation.SuppressLint;
 
+import com.jacobarau.helium.jdata.Copyable;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.Objects;
 
-public class Item {
+public class Item implements Copyable<Item> {
     /**
      * Internal database ID for this item. Not tied to any value in the RSS. Null if not previously saved in the database.
      */
@@ -100,5 +102,20 @@ public class Item {
     @Override
     public int hashCode() {
         return Objects.hash(id, subscriptionId, title, description, publishDate, enclosureUrl, enclosureMimeType, enclosureLengthBytes);
+    }
+
+    @Override
+    public Item copy() {
+        Item result = new Item();
+        result.description = description;
+        result.enclosureLengthBytes = enclosureLengthBytes;
+        result.enclosureMimeType = enclosureMimeType;
+        result.enclosureUrl = enclosureUrl;
+        result.id = id;
+        result.publishDate = publishDate;
+        result.subscriptionId = subscriptionId;
+        result.title = title;
+
+        return result;
     }
 }

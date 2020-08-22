@@ -3,7 +3,6 @@ package com.jacobarau.helium.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -20,7 +19,7 @@ import android.widget.TextView;
 
 import com.jacobarau.helium.HeliumApplication;
 import com.jacobarau.helium.R;
-import com.jacobarau.helium.data.JDataListListener;
+import com.jacobarau.helium.jdata.JDataListListener;
 import com.jacobarau.helium.model.Subscription;
 
 import java.util.ArrayList;
@@ -143,7 +142,6 @@ public class SubscriptionsActivity extends Activity {
 
         @Override
         public int getCount() {
-            Log.d(TAG, "getCount(): " + subscriptions.size());
             return subscriptions.size();
         }
 
@@ -183,7 +181,6 @@ public class SubscriptionsActivity extends Activity {
 
         @Override
         public void onDataUpdated(List<Subscription> value) {
-            Log.i(TAG, "onDataUpdated: " + value);
             this.subscriptions = value;
             notifyDataSetChanged();
         }

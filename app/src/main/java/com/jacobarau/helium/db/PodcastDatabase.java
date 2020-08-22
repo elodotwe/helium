@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.jacobarau.helium.data.JDataList;
+import com.jacobarau.helium.jdata.JDataList;
 import com.jacobarau.helium.model.Item;
 import com.jacobarau.helium.model.Subscription;
 

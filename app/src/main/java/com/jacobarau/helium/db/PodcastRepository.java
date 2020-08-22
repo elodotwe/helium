@@ -1,6 +1,6 @@
 package com.jacobarau.helium.db;
 
-import com.jacobarau.helium.data.JDataList;
+import com.jacobarau.helium.jdata.JDataList;
 import com.jacobarau.helium.model.Item;
 import com.jacobarau.helium.model.Subscription;
 
@@ -18,6 +18,10 @@ public class PodcastRepository {
 
     public void subscribeTo(String url) {
         Subscription subscription = new Subscription(url);
+        podcastDatabase.save(subscription);
+    }
+
+    public void save(Subscription subscription) {
         podcastDatabase.save(subscription);
     }
 }

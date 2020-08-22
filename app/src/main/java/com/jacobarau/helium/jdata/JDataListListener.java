@@ -1,4 +1,4 @@
-package com.jacobarau.helium.data;
+package com.jacobarau.helium.jdata;
 
 import java.util.List;
 

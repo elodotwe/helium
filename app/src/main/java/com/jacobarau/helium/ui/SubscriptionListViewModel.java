@@ -1,9 +1,11 @@
 package com.jacobarau.helium.ui;
 
-import com.jacobarau.helium.data.JDataList;
-import com.jacobarau.helium.data.JDataListListener;
+import com.jacobarau.helium.HeliumApplication;
+import com.jacobarau.helium.jdata.JDataList;
+import com.jacobarau.helium.jdata.JDataListListener;
 import com.jacobarau.helium.db.PodcastRepository;
 import com.jacobarau.helium.model.Subscription;
+import com.jacobarau.helium.update.UpdateService;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -55,6 +57,6 @@ public class SubscriptionListViewModel {
     }
 
     public void updatePodcasts() {
-
+        UpdateService.startUpdate(HeliumApplication.wiring.appContext);
     }
 }

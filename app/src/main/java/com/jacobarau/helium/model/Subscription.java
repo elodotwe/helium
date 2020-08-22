@@ -2,13 +2,15 @@ package com.jacobarau.helium.model;
 
 import android.annotation.SuppressLint;
 
+import com.jacobarau.helium.jdata.Copyable;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.Objects;
 
-public class Subscription {
+public class Subscription implements Copyable<Subscription> {
     /**
      * Database ID of this Subscription, or null if not previously saved in the database.
      */
@@ -92,5 +94,17 @@ public class Subscription {
 
     public Subscription(@NotNull String url) {
         this.url = url;
+    }
+
+    @Override
+    public Subscription copy() {
+        Subscription result = new Subscription(url);
+        result.title = title;
+        result.lastUpdated = lastUpdated;
+        result.description = description;
+        result.id = id;
+        result.imageUrl = imageUrl;
+        result.link = link;
+        return result;
     }
 }

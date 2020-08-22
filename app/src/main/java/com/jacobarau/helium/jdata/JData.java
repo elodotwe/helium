@@ -1,4 +1,4 @@
-package com.jacobarau.helium.data;
+package com.jacobarau.helium.jdata;
 
 import android.os.Handler;
 
@@ -7,7 +7,7 @@ import java.util.List;
 
 public class JData<Value, ListenerType extends JDataListener<Value>> {
     protected List<ListenerType> listeners = new ArrayList<>();
-    protected final Object listenersLock = new Object();
+    protected final Object valueAndListenersLock = new Object();
     protected Value value;
     protected Handler handler = new Handler();
 
@@ -20,19 +20,21 @@ public class JData<Value, ListenerType extends JDataListener<Value>> {
     }
 
     public void subscribe(final ListenerType listener) {
-        synchronized (listenersLock) {
+        synchronized (valueAndListenersLock) {
             listeners.add(listener);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
+        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (valueAndListenersLock) {
                     listener.onDataUpdated(value);
                 }
-            });
-        }
+            }
+        });
     }
 
     public void unsubscribe(ListenerType listener) {
-        synchronized (listenersLock) {
+        synchronized (valueAndListenersLock) {
             listeners.remove(listener);
         }
     }
@@ -41,7 +43,7 @@ public class JData<Value, ListenerType extends JDataListener<Value>> {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                synchronized (listenersLock) {
+                synchronized (valueAndListenersLock) {
                     value = newValue;
                     for (JDataListener<Value> listener: listeners) {
                         listener.onDataUpdated(value);
