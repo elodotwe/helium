@@ -22,11 +22,10 @@ public class JData<Value, ListenerType extends JDataListener<Value>> {
     public void subscribe(final ListenerType listener) {
         synchronized (listenersLock) {
             listeners.add(listener);
-            final Value toSend = value;
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onDataUpdated(toSend);
+                    listener.onDataUpdated(value);
                 }
             });
         }

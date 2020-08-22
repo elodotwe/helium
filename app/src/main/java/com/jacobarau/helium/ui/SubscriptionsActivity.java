@@ -3,6 +3,7 @@ package com.jacobarau.helium.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -17,7 +18,9 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.jacobarau.helium.HeliumApplication;
 import com.jacobarau.helium.R;
+import com.jacobarau.helium.data.JDataListListener;
 import com.jacobarau.helium.model.Subscription;
 
 import java.util.ArrayList;
@@ -25,7 +28,10 @@ import java.util.List;
 
 public class SubscriptionsActivity extends Activity {
     public static final String SUBSCRIPTION_ID = "com.jacobarau.mincast.SUBSCRIPTION_ID";
+    private static final String TAG = "SubscriptionsActivity";
     private ListView listView;
+    private SubscriptionListViewModel viewModel;
+    private SubscriptionListAdapter subscriptionListAdapter;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -40,10 +46,10 @@ public class SubscriptionsActivity extends Activity {
 
         switch (id) {
             case R.id.add_podcast:
-//                presenter.onAddPodcastSelected();
+                showAddPodcastDialog();
                 break;
             case R.id.update_podcasts:
-//                presenter.onUpdatePodcastsSelected();
+                viewModel.updatePodcasts();
                 break;
             default:
                 return false;
@@ -87,7 +93,7 @@ public class SubscriptionsActivity extends Activity {
                                 toDelete.add((Subscription)listView.getItemAtPosition(positions.keyAt(i)));
                             }
                         }
-//                        presenter.onUnsubscribe(toDelete);
+                        viewModel.unsubscribeFrom(toDelete);
                         mode.finish(); // Action picked, so close the CAB
                         return true;
                     default:
@@ -104,61 +110,82 @@ public class SubscriptionsActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                presenter.onSubscriptionSelected(position);
                 Intent intent = new Intent(SubscriptionsActivity.this, EpisodesActivity.class);
                 intent.putExtra(SUBSCRIPTION_ID, ((Subscription)listView.getItemAtPosition(position)).id);
                 startActivity(intent);
             }
         });
+
+        subscriptionListAdapter = new SubscriptionListAdapter();
+        listView.setAdapter(subscriptionListAdapter);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        viewModel = HeliumApplication.wiring.provideSubscriptionListViewModel();
+        viewModel.subscriptions.subscribe(subscriptionListAdapter);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        viewModel.subscriptions.unsubscribe(subscriptionListAdapter);
     }
 
-//    @Override
-//    public void onSubscriptionListChanged(final List<Subscription> subscriptions) {
-//        //TODO: maybe don't reinstantiate the adapter every time--notify of changes via an existing one instead?
-//        //TODO: what will this do to the UX when the user adds/deletes a podcast?
-//        listView.setAdapter(new BaseAdapter() {
-//            @Override
-//            public int getCount() {
-//                return subscriptions.size();
-//            }
-//
-//            @Override
-//            public Object getItem(int position) {
-//                return subscriptions.get(position);
-//            }
-//
-//            @Override
-//            public long getItemId(int position) {
-//                return position;
-//            }
-//
-//            @Override
-//            public View getView(int position, View convertView, ViewGroup parent) {
-//                if (convertView == null) {
-//                    LayoutInflater inflater = getLayoutInflater();
-//                    convertView = inflater.inflate(R.layout.podcasts_listview_item, parent, false);
-//                }
-//                TextView title = convertView.findViewById(R.id.podcast_title);
-//                title.setText(subscriptions.get(position).title);
-//                TextView detail = convertView.findViewById(R.id.podcast_summary);
-//
-//                return convertView;
-//            }
-//        });
-//    }
-
-    public void showAddPodcastDialog() {
+    private void showAddPodcastDialog() {
         AddPodcastDialogFragment fragment = new AddPodcastDialogFragment();
         fragment.show(getFragmentManager(), "addPodcast");
+    }
+
+    private class SubscriptionListAdapter extends BaseAdapter implements JDataListListener<Subscription> {
+        private List<Subscription> subscriptions = new ArrayList<>();
+
+        @Override
+        public int getCount() {
+            Log.d(TAG, "getCount(): " + subscriptions.size());
+            return subscriptions.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return subscriptions.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater inflater = getLayoutInflater();
+                convertView = inflater.inflate(R.layout.podcasts_listview_item, parent, false);
+            }
+            TextView title = convertView.findViewById(R.id.podcast_title);
+            title.setText(subscriptions.get(position).title);
+            TextView detail = convertView.findViewById(R.id.podcast_summary);
+            detail.setText(subscriptions.get(position).description);
+
+            return convertView;
+        }
+
+        @Override
+        public void onAdd(Subscription newElement, int index) {
+
+        }
+
+        @Override
+        public void onDelete(Subscription deletedElement, int index) {
+
+        }
+
+        @Override
+        public void onDataUpdated(List<Subscription> value) {
+            Log.i(TAG, "onDataUpdated: " + value);
+            this.subscriptions = value;
+            notifyDataSetChanged();
+        }
     }
 }

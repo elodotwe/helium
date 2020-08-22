@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import com.jacobarau.helium.HeliumApplication;
 import com.jacobarau.helium.R;
 
 public class AddPodcastDialogFragment extends DialogFragment {
@@ -37,7 +38,8 @@ public class AddPodcastDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.add_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-//                        presenter.onAddPodcast(url.getText().toString());
+                        SubscriptionListViewModel viewModel = HeliumApplication.wiring.provideSubscriptionListViewModel();
+                        viewModel.subscribeTo(url.getText().toString());
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

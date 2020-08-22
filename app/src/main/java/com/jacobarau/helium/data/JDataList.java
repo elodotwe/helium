@@ -1,8 +1,13 @@
 package com.jacobarau.helium.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JDataList<Element> extends JData<List<Element>, JDataListListener<Element>> {
+    public JDataList() {
+        super(new ArrayList<Element>());
+    }
+
     public void add(final int index, final Element newElement) {
         handler.post(new Runnable() {
             @Override
