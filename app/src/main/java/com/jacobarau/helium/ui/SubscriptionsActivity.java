@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -165,6 +166,8 @@ public class SubscriptionsActivity extends Activity {
             title.setText(subscriptions.get(position).title);
             TextView detail = convertView.findViewById(R.id.podcast_summary);
             detail.setText(subscriptions.get(position).description);
+            Button downloadButton = convertView.findViewById(R.id.podcast_download_button);
+            downloadButton.setVisibility(View.GONE);
 
             return convertView;
         }

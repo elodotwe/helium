@@ -1,11 +1,14 @@
 package com.jacobarau.helium.ui;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -59,7 +62,7 @@ public class EpisodesActivity extends Activity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.podcasts_listview_item, parent, false);
@@ -69,6 +72,17 @@ public class EpisodesActivity extends Activity {
             TextView detail = convertView.findViewById(R.id.podcast_summary);
             DateFormat dateFormat = DateFormat.getDateTimeInstance();
             detail.setText(dateFormat.format(items.get(position).publishDate));
+
+            Button downloadButton = convertView.findViewById(R.id.podcast_download_button);
+            downloadButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String url = items.get(position).enclosureUrl;
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                }
+            });
 
             return convertView;
         }
