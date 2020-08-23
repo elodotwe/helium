@@ -34,7 +34,11 @@ import static com.jacobarau.helium.ui.Notifications.ONGOING_NOTIFICATION_ID;
 
 public class UpdateService extends Service {
     private final static String TAG = "UpdateService";
+    // If you ever make this a multi-threaded thing, you need to fix the assumption below that
+    // the last item submitted to this executor will be executed last. (Which may actually not be
+    // a property of this executor to begin with? Guess we'll let it ride and see if bugs come out)
     private ExecutorService updateService = Executors.newSingleThreadExecutor();
+    private Handler handler;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -44,7 +48,7 @@ public class UpdateService extends Service {
     @Override
     public void onCreate() {
         startForeground(ONGOING_NOTIFICATION_ID, new Notifications().buildUpdateServiceNotification(this));
-
+        handler = new Handler(getMainLooper());
         onServiceOnCreate();
     }
 
@@ -91,6 +95,17 @@ public class UpdateService extends Service {
                 }
             });
         }
+        updateService.submit(new Runnable() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopSelf();
+                    }
+                });
+            }
+        });
     }
 
     // TODO: I don't like that this returns null, but I dislike exceptions even more at the moment.
