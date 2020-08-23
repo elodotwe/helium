@@ -3,6 +3,8 @@ package com.jacobarau.helium.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -54,5 +56,20 @@ public class AddPodcastDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+        populateURLFromClipboard();
+    }
+
+    private void populateURLFromClipboard() {
+        ClipboardManager clipboardManager = (ClipboardManager) HeliumApplication.wiring.appContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboardManager == null) return;
+
+        ClipData clipData = clipboardManager.getPrimaryClip();
+        if (clipData == null) return;
+
+        CharSequence clipboardContent = clipData.getItemAt(0).coerceToText(HeliumApplication.wiring.appContext);
+        // Crappy heuristics to detect if current clip "looks like" a url
+        if (!clipboardContent.toString().startsWith("http")) return;
+
+        url.setText(clipboardContent);
     }
 }
