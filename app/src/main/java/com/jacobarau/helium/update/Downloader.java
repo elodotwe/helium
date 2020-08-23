@@ -9,7 +9,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * One might think this would be a duplication of Android's DownloadManager, and to an extent you'd
+ * be right.
+ *
+ * But after reading StackOverflow posts about how you can't manually pause and resume that guy,
+ * and how it does weird things like randomly appending "-1" to the filename you specify...I'm
+ * just going to avoid it, at least for now.
+ */
 public class Downloader {
     private final String TAG = this.getClass().getName();
 
@@ -31,10 +42,37 @@ public class Downloader {
         OutputStream output = null;
         HttpURLConnection connection = null;
         try {
-            connection = (HttpURLConnection) url.openConnection();
+            boolean redirecting;
+            Map<URL, Integer> visited = new HashMap<>();
+            do {
+                Integer times = visited.get(url);
+                if (times == null) times = 1;
+                visited.put(url, times);
 
-            // Starts the actual network activity. Can block. TODO: how to unblock? connection.disconnect()? Javadoc is vague...
-            connection.connect();
+                if (times > 3)
+                    throw new IOException("Stuck in redirect loop");
+
+                connection = (HttpURLConnection) url.openConnection();
+
+                // Starts the actual network activity. Can block. TODO: how to unblock? connection.disconnect()? Javadoc is vague...
+                connection.connect();
+
+                // Some podcasts immediately redirect to another URL.
+                // HttpURLConnection totally should manage this...but by design it will only redirect
+                // HTTP-to-HTTP, HTTPS-to-HTTPS, and never between the two. We aren't concerned with
+                // security here, so we just handle the redirects universally.
+                switch (connection.getResponseCode()) {
+                    case HttpURLConnection.HTTP_MOVED_PERM:
+                    case HttpURLConnection.HTTP_MOVED_TEMP:
+                        String location = connection.getHeaderField("Location");
+                        location = URLDecoder.decode(location, "UTF-8");
+                        url = new URL(url, location);  // Deal with relative URLs
+                        redirecting = true;
+                        break;
+                    default:
+                        redirecting = false;
+                }
+            } while (redirecting);
 
             // expect HTTP 200 OK, so we don't mistakenly save error report
             // instead of the file
@@ -67,7 +105,7 @@ public class Downloader {
                 output.write(data, 0, count);
             }
         } catch (Exception e) {
-            Log.e(TAG, "downloadFile: ", e);
+            Log.e(TAG, "downloadFile failed, propagating this exception", e);
             throw e;
         } finally {
             try {
