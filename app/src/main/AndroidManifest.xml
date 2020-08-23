@@ -20,7 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.EpisodesActivity" />
+        <activity android:name=".ui.EpisodesActivity"
+            android:parentActivityName=".ui.SubscriptionsActivity"/>
 
         <service android:name=".update.UpdateService" />
     </application>
