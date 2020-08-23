@@ -1,8 +1,10 @@
 package com.jacobarau.helium.db;
 
+import com.jacobarau.helium.HeliumApplication;
 import com.jacobarau.helium.jdata.JDataList;
 import com.jacobarau.helium.model.Item;
 import com.jacobarau.helium.model.Subscription;
+import com.jacobarau.helium.update.UpdateService;
 
 import java.util.List;
 
@@ -20,7 +22,12 @@ public class PodcastRepository {
 
     public void subscribeTo(String url) {
         Subscription subscription = new Subscription(url);
-        podcastDatabase.save(subscription);
+        podcastDatabase.save(subscription, new Runnable() {
+            @Override
+            public void run() {
+                updatePodcasts();
+            }
+        });
     }
 
     public void save(Subscription subscription) {
@@ -41,5 +48,9 @@ public class PodcastRepository {
 
     public void deleteAllItems(Subscription subscription) {
         podcastDatabase.deleteSubscriptionItems(subscription);
+    }
+
+    public void updatePodcasts() {
+        UpdateService.startUpdate(HeliumApplication.wiring.appContext);
     }
 }

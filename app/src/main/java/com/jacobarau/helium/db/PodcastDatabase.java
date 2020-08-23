@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+
 import com.jacobarau.helium.jdata.JDataList;
 import com.jacobarau.helium.model.Item;
 import com.jacobarau.helium.model.Subscription;
@@ -19,11 +21,13 @@ import static com.jacobarau.helium.db.PodcastDatabaseContract.*;
 public class PodcastDatabase {
     private ExecutorService databaseExecutor = Executors.newSingleThreadExecutor();
     private SQLiteDatabase database;
+    private Handler handler;
 
     public final JDataList<Subscription> subscriptions = new JDataList<>();
     public final JDataList<Item> items = new JDataList<>();
 
     public PodcastDatabase(final Context appContext) {
+        handler = new Handler(appContext.getMainLooper());
         databaseExecutor.submit(new Runnable() {
             @Override
             public void run() {
@@ -44,6 +48,10 @@ public class PodcastDatabase {
     }
 
     public void save(final Subscription subscription) {
+        save(subscription, null);
+    }
+
+    public void save(final Subscription subscription, final Runnable onCompleted) {
         databaseExecutor.submit(new Runnable() {
             @Override
             public void run() {
@@ -58,6 +66,9 @@ public class PodcastDatabase {
                     subscription.id = database.insertOrThrow(Subscriptions.TABLE_NAME, null, subscriptionToValues(subscription));
                 }
                 refreshSubscriptions();
+                if (onCompleted != null) {
+                    handler.post(onCompleted);
+                }
             }
         });
     }
