@@ -38,4 +38,8 @@ public class PodcastRepository {
     public void save(List<Item> items) {
         podcastDatabase.save(items);
     }
+
+    public void deleteAllItems(Subscription subscription) {
+        podcastDatabase.deleteSubscriptionItems(subscription);
+    }
 }

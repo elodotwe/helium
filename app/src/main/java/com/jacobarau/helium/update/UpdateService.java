@@ -83,6 +83,7 @@ public class UpdateService extends Service {
 
                     HeliumApplication.wiring.podcastRepository.save(subscription);
 
+                    HeliumApplication.wiring.podcastRepository.deleteAllItems(subscription);
                     for (Item item: result.items) {
                         item.subscriptionId = subscription.id;
                     }

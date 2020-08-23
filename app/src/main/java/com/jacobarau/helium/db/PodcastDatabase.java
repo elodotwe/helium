@@ -220,4 +220,14 @@ public class PodcastDatabase {
             }
         });
     }
+
+    public void deleteSubscriptionItems(final Subscription subscription) {
+        databaseExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                database.delete(Items.TABLE_NAME, Items.COLUMN_NAME_SUBSCRIPTION_ID + " = ?", new String[]{String.valueOf(subscription.id)});
+                refreshItems();
+            }
+        });
+    }
 }
