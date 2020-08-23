@@ -79,7 +79,7 @@ public class EpisodesActivity extends Activity {
                 public void onClick(View v) {
                     String url = items.get(position).enclosureUrl;
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
+                    i.setDataAndType(Uri.parse(url), "audio/*");
                     startActivity(i);
                 }
             });
