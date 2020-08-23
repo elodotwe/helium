@@ -29,6 +29,8 @@
         android:layout_marginRight="4dp"
         android:layout_toStartOf="@id/podcast_download_button"
         android:layout_toLeftOf="@id/podcast_download_button"
+        android:ellipsize="end"
+        android:lines="2"
         android:text="@string/podcast_summary" />
 
     <Button
