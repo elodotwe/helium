@@ -30,7 +30,10 @@ public class EpisodesActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_episodes);
-        Long id = getIntent().getExtras().getLong(SubscriptionsActivity.SUBSCRIPTION_ID);
+        if (!getIntent().getExtras().containsKey(SubscriptionsActivity.SUBSCRIPTION_ID)) {
+            throw new RuntimeException("EpisodesActivity launched without subscription ID in extras");
+        }
+        long id = getIntent().getExtras().getLong(SubscriptionsActivity.SUBSCRIPTION_ID);
         episodeAdapter = new EpisodeAdapter();
         viewModel = HeliumApplication.wiring.provideSubscriptionListViewModel();
         viewModel.subscribeToItemsForSubscription(id, episodeAdapter);
@@ -79,7 +82,7 @@ public class EpisodesActivity extends Activity {
                 public void onClick(View v) {
                     String url = items.get(position).enclosureUrl;
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setDataAndType(Uri.parse(url), "audio/*");
+                    i.setData(Uri.parse(url));
                     startActivity(i);
                 }
             });
