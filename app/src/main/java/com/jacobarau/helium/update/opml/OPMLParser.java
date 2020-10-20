@@ -17,7 +17,7 @@ import java.util.List;
 public class OPMLParser extends XMLParser {
     private static String TAG = RssParser.class.getSimpleName();
 
-    public List<Subscription> parseOPML(InputStream inputStream, String encoding, @NotNull String url) throws XmlPullParserException, IOException, ParseException {
+    public List<Subscription> parseOPML(InputStream inputStream, String encoding) throws XmlPullParserException, IOException, ParseException {
         List<Subscription> subscriptions = new ArrayList<>();
         XmlPullParser parser = initialize(inputStream, encoding);
 
@@ -45,28 +45,23 @@ public class OPMLParser extends XMLParser {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();
         }
-
-        int level = 0;
+        String url = parser.getAttributeValue(null, "xmlUrl");
+        if (url != null) {
+            subscriptions.add(new Subscription(url));
+        }
+        parser.next();
 
         do {
             if (parser.getEventType() == XmlPullParser.START_TAG) {
                 if ("outline".equals(parser.getName())) {
-                    String url = parser.getAttributeValue(null, "xmlUrl");
-                    if (url != null) {
-                        Subscription subscription = new Subscription(url);
-                        subscriptions.add(subscription);
-                    }
-                    level++;
+                    processOutline(parser, subscriptions);
                 } else {
                     skipTag(parser);
                 }
             } else {
-                if (parser.getEventType() == XmlPullParser.END_TAG) {
-                    level--;
-                }
                 parser.next();
             }
         } while (parser.getEventType() != XmlPullParser.END_DOCUMENT &&
-                level > 0);
+                parser.getEventType() != XmlPullParser.END_TAG);
     }
 }
