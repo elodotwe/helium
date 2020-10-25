@@ -14,4 +14,6 @@
     <string name="channel_name">Podcast Update</string>
     <string name="channel_description">Displayed when Helium is updating your podcasts.</string>
     <string name="podcast_summary">%1$d hours ago, %2$d new episodes</string>
+    <string name="setting_title_opml_export">Export podcast list to OPML</string>
+    <string name="setting_description_opml_export">The exported file will contain a list of your subscribed podcasts, useful for importing into other podcast apps.</string>
 </resources>

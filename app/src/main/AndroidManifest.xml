@@ -23,6 +23,9 @@
         <activity android:name=".ui.EpisodesActivity"
             android:parentActivityName=".ui.SubscriptionsActivity"/>
 
+        <activity android:name=".ui.SettingsActivity"
+            android:parentActivityName=".ui.SubscriptionsActivity" />
+
         <service android:name=".update.UpdateService" />
     </application>
 

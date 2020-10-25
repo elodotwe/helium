@@ -51,6 +51,10 @@ public class SubscriptionsActivity extends Activity {
             case R.id.update_podcasts:
                 viewModel.updatePodcasts();
                 break;
+            case R.id.settings:
+                Intent intent = new Intent(SubscriptionsActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                break;
             default:
                 return false;
         }
