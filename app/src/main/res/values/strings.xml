@@ -16,4 +16,6 @@
     <string name="podcast_summary">%1$d hours ago, %2$d new episodes</string>
     <string name="setting_title_opml_export">Export podcast list to OPML</string>
     <string name="setting_description_opml_export">The exported file will contain a list of your subscribed podcasts, useful for importing into other podcast apps.</string>
+    <string name="setting_description_opml_import">Subscribe to all feeds listed in the given OPML file. Existing subscriptions will not be modified.</string>
+    <string name="setting_title_opml_import">Import subscription list from OPML file</string>
 </resources>

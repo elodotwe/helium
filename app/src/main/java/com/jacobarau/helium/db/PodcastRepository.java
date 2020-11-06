@@ -1,5 +1,8 @@
 package com.jacobarau.helium.db;
 
+import android.net.Uri;
+import android.util.Log;
+
 import com.jacobarau.helium.HeliumApplication;
 import com.jacobarau.helium.jdata.JDataList;
 import com.jacobarau.helium.model.Item;
@@ -52,5 +55,13 @@ public class PodcastRepository {
 
     public void updatePodcasts() {
         UpdateService.startUpdate(HeliumApplication.wiring.appContext);
+    }
+
+    public void importOPML(Uri toImport) {
+        Log.i("foo", "importing opml at " + toImport);
+    }
+
+    public void exportOPML(Uri destination) {
+
     }
 }

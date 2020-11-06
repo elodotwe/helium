@@ -1,6 +1,6 @@
 package com.jacobarau.helium.ui;
 
-import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,18 +12,22 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.jacobarau.helium.HeliumApplication;
 import com.jacobarau.helium.R;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends FilePickerActivity {
     private ListView listView;
     private SettingsAdapter settingsAdapter;
     private SettingsItem[] settingsItems = {
-            SettingsItem.OPML_EXPORT
+            SettingsItem.OPML_EXPORT,
+            SettingsItem.OPML_IMPORT
     };
+    private SettingsActivityViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = HeliumApplication.wiring.provideSettingsActivityViewModel();
         setContentView(R.layout.activity_settings);
         listView = findViewById(R.id.settingsList);
         settingsAdapter = new SettingsAdapter();
@@ -31,7 +35,23 @@ public class SettingsActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("foo", "settings item clicked");
+                switch (settingsItems[position]) {
+                    case OPML_IMPORT:
+                        pickOpen(new PickerListener() {
+                            @Override
+                            public void onURI(Uri uri) {
+                                viewModel.importOPML(uri);
+                            }
+                        });
+                        break;
+                    case OPML_EXPORT:
+                        pickSave(new PickerListener() {
+                            @Override
+                            public void onURI(Uri uri) {
+                                viewModel.exportOPML(uri);
+                            }
+                        });
+                }
             }
         });
     }
@@ -84,7 +104,8 @@ public class SettingsActivity extends Activity {
 }
 
 enum SettingsItem {
-    OPML_EXPORT(R.string.setting_title_opml_export, R.string.setting_description_opml_export, android.R.drawable.ic_menu_upload);
+    OPML_EXPORT(R.string.setting_title_opml_export, R.string.setting_description_opml_export, android.R.drawable.ic_menu_upload),
+    OPML_IMPORT(R.string.setting_title_opml_import, R.string.setting_description_opml_import, android.R.drawable.ic_menu_save);
 
     SettingsItem(int bigText, Integer description, Integer icon) {
         this.bigText = bigText;
